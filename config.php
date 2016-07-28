@@ -18,10 +18,10 @@ define('DB_PASS', 'cFgFLU93i68s');
 
 // Facebook app id
 // See README.md for details
-define('APP_ID', '534076003453201');
+define('APP_ID', '1363806173726766');
 
 // Facebook app secret
-define('APP_SECRET', '0ea2ed69ecda1364f4b152792656b68e');
+define('APP_SECRET', '361e71a36f14350916ab46066bae2a40');
 
 // ID of your Facebook page
 // This is where people will be checking in
