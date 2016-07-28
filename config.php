@@ -3,15 +3,18 @@
 // Rename to config.php
 
 // database host
-define('DB_HOST', 'localhost');
+#define('DB_HOST', 'localhost');
+define('DB_HOST', '127.8.209.130');
 // database port
 define('DB_PORT', '3306');
 // database name
 define('DB_NAME', 'socialwifi');
 // database user name
-define('DB_USER', 'root');
+#define('DB_USER', 'root');
+define('DB_USER', 'adminfRLgbfq');
 // database password
-define('DB_PASS', '');
+#define('DB_PASS', '');
+define('DB_PASS', 'cFgFLU93i68s');
 
 // Facebook app id
 // See README.md for details
