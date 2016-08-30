@@ -36,7 +36,7 @@ define('PAGE_NAME', 'Social Wifi');
 // This will typically a directory as the .htaccess
 // rewrites all requests to index.php
 // Example: https://example.xyz/wifi/
-define('MY_URL', 'http://socialwifi-phelipebf.rhcloud.com');
+define('MY_URL', 'http://socialwifi-phelipebf.rhcloud.com/');
 
 // How long the wifi session persists before if expires
 // Set this in Minutes
