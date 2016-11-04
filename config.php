@@ -64,7 +64,7 @@ define('IMPRINT_URL', 'http://example.xyz/imprint/');
 define('COOKIE_SESSION_DURATION', 3600 * 24);
 
 // Where user is sent after login is done
-define('PORTAL_URL', 'http://example.xzy/portal/');
+define('PORTAL_URL', 'http://www.google.com');
 
 // Display helpful message to the FB review people
 define('FB_REVIEW', False);
