@@ -314,7 +314,7 @@ function login_success($redirect = True) {
     $token = make_token();
     $url = 'http://' . $_SESSION['gw_address'] . ':'
         . $_SESSION['gw_port'] . '/wifidog/auth?token=' . $token;
-    ;;$url = 'http://' . $_SESSION['gw_address'] . '/auth?token=' . $token;
+    //$url = 'http://' . $_SESSION['gw_address'] . '/auth?token=' . $token;
     if ($redirect) {
         Flight::redirect($url);
     } else {
