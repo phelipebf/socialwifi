@@ -264,7 +264,7 @@ function fblogin() {
     // The code is already set up to handle this separately, but I believe
     // the combined flow provides better UX.
     // https://developers.facebook.com/docs/facebook-login/permissions/v2.2
-    $scope = array('publish_actions');
+    $scope = array('publish_actions', 'user_likes');
     $fb_login_url = $helper->getLoginUrl($scope);
     $code_login_url = MY_URL . 'access_code/';
     Flight::render('login', array(
