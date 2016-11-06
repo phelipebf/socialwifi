@@ -90,9 +90,36 @@ function check_permissions($session) {
     } catch (\Exception $ex) {
         Flight::error($ex);
     }
+    
     return false;
 }
 
+function get_likes($session) {
+    $request = new FacebookRequest(
+        $session,
+        'GET',
+        '/me/likes'
+    );
+    
+    try {
+        $response = $request->execute();
+        $graphObject = $response->getGraphObject()->asArray();
+        // http://stackoverflow.com/q/23527919
+//        foreach ($graphObject as $key => $permissionObject) {
+//            //print_r($permission);
+//            if ($permissionObject->permission == 'publish_actions') {
+//                return $permissionObject->status == 'granted';
+//            }
+//        }
+        print_r($graphObject); die;
+    } catch (FacebookRequestException $ex) {
+        Flight::error($ex);
+    } catch (\Exception $ex) {
+        Flight::error($ex);
+    }
+    
+    return false;
+}
 
 function handle_root() {
     render_boilerplate();

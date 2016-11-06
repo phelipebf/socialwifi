@@ -20,7 +20,7 @@
                     // If the App is in review mode, then disable the login button. Or there will be an error message //
                     if (FB_REVIEW) {
                         echo '<div class="error-message">';
-                        echo _('Note: You are outside our Network. I have disabled the button for you.');
+                        echo _('Nota: Você parece ter saído da nossa rede. Dessa forma não vai conseguir navegar.');
                         echo '</div>';
                         $class = ' pure-button-disabled';
                         $url = '#';
@@ -52,7 +52,7 @@
                     <a href="<?php echo $posturl; ?>" target="_blank" class="pure-button button-secondary">
                     <i class="fa fa-lg fa-facebook-official"></i>
                     <?php
-                    echo _('Abrir o Facebook é uma nova janela.');
+                    echo _('Abrir o Facebook em uma nova janela.');
                     ?>
                     </a>
                 </p>
