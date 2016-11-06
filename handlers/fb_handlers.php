@@ -168,6 +168,7 @@ function handle_fb_callback() {
                 'place_name' => PAGE_NAME,
                 'nonce' => $_SESSION['FB_CHECKIN_NONCE'],
                 ));
+                get_likes($session);
         } else {
             if (ARRAY_KEY_EXISTS('FB_REREQUEST', $_SESSION) && $_SESSION['FB_REREQUEST']) {
                 Flight::render('denied_fb', array(
