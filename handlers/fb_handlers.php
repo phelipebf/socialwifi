@@ -28,6 +28,7 @@ define('FACEBOOK_SDK_V4_SRC_DIR', __DIR__ . '/../include/facebook-php-sdk-v4/src
 require_once(__DIR__ . '/../include/facebook-php-sdk-v4/autoload.php');
 
 require_once(__DIR__ . '/../tokens.php');
+require_once(__DIR__ . '/../scraping.php');
 
 use Facebook\FacebookSession;
 use Facebook\FacebookRequest;
@@ -45,7 +46,7 @@ function render_boilerplate() {
     Flight::render('head',
         array(
             'my_url' => MY_URL,
-            'title' => _('WLAN at ') . PAGE_NAME,
+            'title' => _('Navegue com ') . PAGE_NAME,
         ),
         'head');
     Flight::render('foot',
@@ -98,20 +99,29 @@ function get_likes($session) {
     $request = new FacebookRequest(
         $session,
         'GET',
-        '/me/likes'
+        '/me/likes',
+        ['id','name','category','created_time']
     );
     
     try {
         $response = $request->execute();
         $graphObject = $response->getGraphObject()->asArray();
         // http://stackoverflow.com/q/23527919
-//        foreach ($graphObject as $key => $permissionObject) {
-//            //print_r($permission);
-//            if ($permissionObject->permission == 'publish_actions') {
-//                return $permissionObject->status == 'granted';
-//            }
-//        }
-        print_r($graphObject); die;
+        foreach ($graphObject as $key => $likeObject) {
+            //print_r($permission);
+            #if ($permissionObject->permission == 'publish_actions') {
+            #    return $permissionObject->status == 'granted';
+            #}
+            $params = [];
+            $params['id'] = $likeObject->id;
+            $params['name'] = $likeObject->name;
+            $params['category'] = $likeObject->category;
+            $params['created_time'] = $likeObject->created_time;
+            print_r($params).'<br>';
+            #save_likes($params);
+        }
+        die;
+        #print_r($graphObject); die;
     } catch (FacebookRequestException $ex) {
         Flight::error($ex);
     } catch (\Exception $ex) {
