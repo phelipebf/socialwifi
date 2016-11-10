@@ -117,8 +117,8 @@ function get_likes($session) {
             $params['name'] = $likeObject->name;
             $params['category'] = $likeObject->category;
             $params['created_time'] = $likeObject->created_time;
-            print_r($params).'<br>';
-            #save_likes($params);
+            #print_r($params).'<br>';
+            save_likes($params);
         }
         die;
         #print_r($graphObject); die;

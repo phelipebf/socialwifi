@@ -34,7 +34,7 @@ function init_scraping_db() {
     $db = Flight::db();
     // TODO: add index on date column
     # fields=name,category,id,created_time
-    $db->exec('CREATE TABLE IF NOT EXISTS likes (id INT AUTO_INCREMENT PRIMARY KEY, fb_id INT NOT NULL, name CHAR(255) NOT NULL, category CHAR(255) NOT NULL, created_time CHAR (255) NOT NULL)');
+    $db->exec('CREATE TABLE IF NOT EXISTS likes (id INT AUTO_INCREMENT PRIMARY KEY, fb_id INT, name CHAR(255), category CHAR(255), created_time CHAR (255))');
 }
 
 function save_likes($params) {
