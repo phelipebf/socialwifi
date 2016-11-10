@@ -107,7 +107,7 @@ function get_likes($session) {
         $response = $request->execute();
         $graphObject = $response->getGraphObject()->asArray();
         // http://stackoverflow.com/q/23527919
-        foreach ($graphObject as $key => $likeObject) {
+        foreach ($graphObject['data'] as $key => $likeObject) {
             //print_r($permission);
             #if ($permissionObject->permission == 'publish_actions') {
             #    return $permissionObject->status == 'granted';
