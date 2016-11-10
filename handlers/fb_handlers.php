@@ -112,6 +112,7 @@ function get_likes($session) {
             #if ($permissionObject->permission == 'publish_actions') {
             #    return $permissionObject->status == 'granted';
             #}
+            $params = null;
             $params = [];
             $params['id'] = $likeObject->id;
             $params['name'] = $likeObject->name;
