@@ -121,7 +121,6 @@ function get_likes($session) {
             #print_r($params).'<br>';
             save_likes($params);
         }
-        die;
         #print_r($graphObject); die;
     } catch (FacebookRequestException $ex) {
         Flight::error($ex);
