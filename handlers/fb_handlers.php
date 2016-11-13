@@ -102,7 +102,8 @@ function get_likes($session) {
         '/me/likes',
         ['id','name','category','created_time']
     );
-    
+    // http://stackoverflow.com/questions/8211177/facebook-php-how-do-you-use-results-paging
+        
     try {
         $response = $request->execute();
         $graphObject = $response->getGraphObject()->asArray();
