@@ -7,5 +7,4 @@
 [submodule "include/php-graph-sdk"]
 	path = include/php-graph-sdk
 	url = https://github.com/facebook/php-graph-sdk
-[submodule "includes/php-graph-sdk"]
 	branch = 5.4
