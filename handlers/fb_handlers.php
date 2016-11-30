@@ -24,25 +24,14 @@
 // and Facebook
 
 // TODO: this only works if the script is installed in root
-#define('FACEBOOK_SDK_V4_SRC_DIR', __DIR__ . '/../include/facebook-php-sdk-v4/src/Facebook/');
-#require_once(__DIR__ . '/../include/facebook-php-sdk-v4/autoload.php');
-
 define('FACEBOOK_SDK_V4_SRC_DIR', __DIR__ . '/../include/php-graph-sdk/src/Facebook');
 require_once(__DIR__ . '/../include/php-graph-sdk/src/Facebook/autoload.php');
 
 require_once(__DIR__ . '/../tokens.php');
-require_once(__DIR__ . '/../scraping.php');
-
-#use Facebook\FacebookSession;
-#use Facebook\FacebookRequest;
-#use Facebook\FacebookRequestException;
-#use Facebook\FacebookRedirectLoginHelper;
 
 use Facebook\Facebook;
 use Facebook\Exceptions\FacebookResponseException;
 use Facebook\Exceptions\FacebookSDKException;
-
-#FacebookSession::setDefaultApplication(APP_ID,APP_SECRET);
 
 Flight::set('fb', new Facebook([
   'app_id' => APP_ID,
@@ -58,7 +47,7 @@ function render_boilerplate() {
     Flight::render('head',
         array(
             'my_url' => MY_URL,
-            'title' => _('Navegue com ') . PAGE_NAME,
+            'title' => _('WLAN at ') . PAGE_NAME,
         ),
         'head');
     Flight::render('foot',
@@ -80,42 +69,24 @@ function render_boilerplate() {
 }
 
 
-//function check_permissions($session) {;
-//
-//    $request = new FacebookRequest(
-//        $session,
-//        'GET',
-//        '/me/permissions'
-//    );
 function check_permissions($accessToken) {
   
     $fb = Flight::get('fb');
- 
+    
     try {
-//        $response = $request->execute();
-//        $graphObject = $response->getGraphObject()->asArray();
-//        // http://stackoverflow.com/q/23527919
-//        foreach ($graphObject as $key => $permissionObject) {
-//            //print_r($permission);
-//            if ($permissionObject->permission == 'publish_actions') {
-//                return $permissionObject->status == 'granted';
-//            }
-//        }
         $response = $fb->get('/me/permissions', $accessToken);
         $graphEdge = $response->getGraphEdge();
         
         foreach($graphEdge as $graphNode) {  
             if ($graphNode->getField('permission') == 'publish_actions') {
                 return $graphNode->getField('status') == 'granted';
-              }
-          }
-//    } catch (FacebookRequestException $ex) {
+            }
+        }
     } catch (FacebookResponseException $ex) {
         Flight::error($ex);
     } catch (\Exception $ex) {
         Flight::error($ex);
     }
-    
     return false;
 }
 
@@ -182,11 +153,9 @@ function handle_rerequest_permission() {
     $fb = Flight::get('fb');
     render_boilerplate();
     // Simplification: always assume we are not logged in!
-//    $helper = new FacebookRedirectLoginHelper(MY_URL . 'fb_callback/');
     $helper = $fb->getRedirectLoginHelper();
     // We do want to publish to the user's wall!
     $scope = array('publish_actions');
-//    $fb_login_url = $helper->getReRequestUrl($scope);
     $fb_login_url = $helper->getReRequestUrl(MY_URL . 'fb_callback/', $scope);
     Flight::render('rerequest_permission', array(
         'fburl' => $fb_login_url,
@@ -196,15 +165,10 @@ function handle_rerequest_permission() {
 // In the FB callback, we show a form to the user
 // or an error message if something went wrong.
 function handle_fb_callback() {
-    
     $fb = Flight::get('fb');
-    
     render_boilerplate();
-//    $helper = new FacebookRedirectLoginHelper(MY_URL . 'fb_callback/');
     $helper = $fb->getRedirectLoginHelper();
     try {
-//        $session = $helper->getSessionFromRedirect();
-//    } catch(FacebookRequestException $ex) {
         $accessToken = $helper->getAccessToken();
     } catch(FacebookSDKException $ex) {
       // When Facebook returns an error
@@ -213,9 +177,6 @@ function handle_fb_callback() {
         // When validation fails or other local issues
         Flight:error($ex);
     }
-//    if ($session) {
-//        $_SESSION['FBTOKEN'] = $session->getToken();
-//        if (check_permissions($session)) {
     if (isset($accessToken)) {
         $_SESSION['FBTOKEN'] = (string) $accessToken;
         if (check_permissions($accessToken)) {
@@ -225,7 +186,6 @@ function handle_fb_callback() {
                 'place_name' => PAGE_NAME,
                 'nonce' => $_SESSION['FB_CHECKIN_NONCE'],
                 ));
-                get_likes($session);
         } else {
             if (ARRAY_KEY_EXISTS('FB_REREQUEST', $_SESSION) && $_SESSION['FB_REREQUEST']) {
                 Flight::render('denied_fb', array(
@@ -245,9 +205,7 @@ function handle_fb_callback() {
 }
 
 function handle_checkin() {
-    
     $fb = Flight::get('fb');
-    
     render_boilerplate();
     // This happens if we unset the nonce below.
     // Or if the nonce was never set, in which case the user
@@ -268,8 +226,7 @@ function handle_checkin() {
         ));
         Flight::stop();
     }
-    #$submitted_nonce = Flight::request()->query->nonce;
-    $submitted_nonce = Flight::request()->data->nonce;
+    $submitted_nonce = Flight::request()->query->nonce;
     if (empty($submitted_nonce)) {
         Flight::error(new Exception('No nonce in form submission!'));
     }
@@ -284,32 +241,21 @@ function handle_checkin() {
     if (empty($token)) {
         Flight::error(new Exception('No FB token in session!'));
     }
-//    $session = new FacebookSession($token);
-    #$message = Flight::request()->query->message;
-    $message = Flight::request()->data->message;
+    $message = Flight::request()->query->message;
 
     $config = array('place' => PAGE_ID);
     if (! empty($message)) {
         $config['message'] = $message;
     }
-//    $request = new FacebookRequest(
-//        $session,
-//        'POST',
-//        '/me/feed',
-//        $config
-//    );
     // Some exceptions can be caught and handled sanely,
     // e.g. Duplicate status message (506)
     try {
-//        $response = $request->execute()->getGraphObject();
-//    } catch (FacebookRequestException $ex) {
         $response = $fb->post('/me/feed', $config, $token);
     } catch (FacebookResponseException $ex) {
         Flight::error($ex);
     } catch (\Exception $ex) {
         Flight::error($ex);
     }
-//    $postid = $response->asArray()['id'];
     $postid = $response->getGraphNode()->getField('id');
     $posturl = 'https://www.facebook.com/' . $postid;
     Flight::render('checkin',
@@ -320,24 +266,17 @@ function handle_checkin() {
 }
 
 function fblogin() {
-
     $fb = Flight::get('fb');
-    
     // Simplification: always assume we are not logged in!
-//    $helper = new FacebookRedirectLoginHelper(MY_URL . 'fb_callback/');
     $helper = $fb->getRedirectLoginHelper();
-    
     // We do want to publish to the user's wall!
     // Note: Facebook docs state that login and write permission request
     // should be two separate requests.
     // The code is already set up to handle this separately, but I believe
     // the combined flow provides better UX.
     // https://developers.facebook.com/docs/facebook-login/permissions/v2.2
-    $scope = array('publish_actions', 'user_likes');
-    
-//    $fb_login_url = $helper->getLoginUrl($scope);
+    $scope = array('publish_actions');
     $fb_login_url = $helper->getLoginUrl(MY_URL . 'fb_callback/', $scope);
-    
     $code_login_url = MY_URL . 'access_code/';
     Flight::render('login', array(
         'fburl' => $fb_login_url,
@@ -351,8 +290,7 @@ function handle_access_code() {
 
     render_boilerplate();
     $request = Flight::request();
-    #$code = $request->query->access_code;
-    $code = $request->data->access_code;
+    $code = $request->query->access_code;
     $code = strtolower(trim($code));
 
     if (empty($code)) {
@@ -415,7 +353,6 @@ function login_success($redirect = True) {
     $token = make_token();
     $url = 'http://' . $_SESSION['gw_address'] . ':'
         . $_SESSION['gw_port'] . '/wifidog/auth?token=' . $token;
-    //$url = 'http://' . $_SESSION['gw_address'] . '/auth?token=' . $token;
     if ($redirect) {
         Flight::redirect($url);
     } else {
