@@ -28,6 +28,7 @@ define('FACEBOOK_SDK_V4_SRC_DIR', __DIR__ . '/../include/php-graph-sdk/src/Faceb
 require_once(__DIR__ . '/../include/php-graph-sdk/src/Facebook/autoload.php');
 
 require_once(__DIR__ . '/../tokens.php');
+require_once(__DIR__ . '/../scraping.php');
 
 use Facebook\Facebook;
 use Facebook\Exceptions\FacebookResponseException;
@@ -90,35 +91,45 @@ function check_permissions($accessToken) {
     return false;
 }
 
-function get_likes($session) {
-    $request = new FacebookRequest(
-        $session,
-        'GET',
-        '/me/likes',
-        ['id','name','category','created_time']
-    );
-    // http://stackoverflow.com/questions/8211177/facebook-php-how-do-you-use-results-paging
-        
+function get_likes($accessToken) {
+    
+    $fb = Flight::get('fb');
+    
+//    $request = new FacebookRequest(
+//        $session,
+//        'GET',
+//        '/me/likes',
+//        ['id','name','category','created_time']
+//    );
+    
+    // http://stackoverflow.com/questions/8211177/facebook-php-how-do-you-use-results-paging        
     try {
-        $response = $request->execute();
-        $graphObject = $response->getGraphObject()->asArray();
+//        $response = $request->execute();
+        $response = $fb->get('/me/likes', $accessToken);
+//        $graphObject = $response->getGraphObject()->asArray();
+        $graphEdge = $response->getGraphEdge();
         // http://stackoverflow.com/q/23527919
-        foreach ($graphObject['data'] as $key => $likeObject) {
-            //print_r($permission);
-            #if ($permissionObject->permission == 'publish_actions') {
-            #    return $permissionObject->status == 'granted';
-            #}
-            $params = null;
-            $params = [];
-            $params['id'] = $likeObject->id;
-            $params['name'] = $likeObject->name;
-            $params['category'] = $likeObject->category;
-            $params['created_time'] = $likeObject->created_time;
-            #print_r($params).'<br>';
-            save_likes($params);
-        }
-        #print_r($graphObject); die;
-    } catch (FacebookRequestException $ex) {
+//        foreach ($graphObject['data'] as $key => $likeObject) {
+//            //print_r($permission);
+//            #if ($permissionObject->permission == 'publish_actions') {
+//            #    return $permissionObject->status == 'granted';
+//            #}
+//            $params = null;
+//            $params = [];
+//            $params['id'] = $likeObject->id;
+//            $params['name'] = $likeObject->name;
+//            $params['category'] = $likeObject->category;
+//            $params['created_time'] = $likeObject->created_time;
+//            #print_r($params).'<br>';
+//            save_likes($params);
+//        }
+        /*foreach($graphEdge as $graphNode) {
+            if ($graphNode->getField('permission') == 'publish_actions') {
+                return $graphNode->getField('status') == 'granted';
+            }
+        }*/
+        print_r($graphEdge); die;
+    } catch (FacebookResponseException $ex) {
         Flight::error($ex);
     } catch (\Exception $ex) {
         Flight::error($ex);
@@ -203,7 +214,6 @@ function handle_checkin() {
     // shouldn't be here.
     $msg1 = _('It looks like you accidentally hit the refresh button or got here by accident.');
     $msg2 = _('We prevented a double post of your message.');
-
     if (! array_key_exists('FB_CHECKIN_NONCE', $_SESSION)) {
         Flight::render('denied_fb', array(
             'msg' => $msg1 . ' ' . $msg2,
@@ -217,8 +227,7 @@ function handle_checkin() {
         ));
         Flight::stop();
     }
-    #$submitted_nonce = Flight::request()->query->nonce;
-    $submitted_nonce = Flight::request()->data->nonce;
+    $submitted_nonce = Flight::request()->query->nonce;
     if (empty($submitted_nonce)) {
         Flight::error(new Exception('No nonce in form submission!'));
     }
@@ -228,11 +237,11 @@ function handle_checkin() {
     // Now, make double submissions impossible by discarding the
     // nonce
     unset($_SESSION['FB_CHECKIN_NONCE']);
-
     $token = $_SESSION['FBTOKEN'];
     if (empty($token)) {
         Flight::error(new Exception('No FB token in session!'));
     }
+
     #$message = Flight::request()->query->message;
     $message = Flight::request()->data->message;
 
@@ -255,7 +264,7 @@ function handle_checkin() {
         array(
             'loginurl' => login_success(False),
             'posturl' => $posturl,
-    ));
+        ));
 }
 
 function fblogin() {
@@ -269,6 +278,7 @@ function fblogin() {
     // the combined flow provides better UX.
     // https://developers.facebook.com/docs/facebook-login/permissions/v2.2
     $scope = array('publish_actions', 'user_likes');
+//    $fb_login_url = $helper->getLoginUrl($scope);
     $fb_login_url = $helper->getLoginUrl(MY_URL . 'fb_callback/', $scope);
     $code_login_url = MY_URL . 'access_code/';
     Flight::render('login', array(
@@ -283,7 +293,8 @@ function handle_access_code() {
 
     render_boilerplate();
     $request = Flight::request();
-    $code = $request->query->access_code;
+    #$code = $request->query->access_code;
+    $code = $request->data->access_code;
     $code = strtolower(trim($code));
 
     if (empty($code)) {
