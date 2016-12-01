@@ -4,3 +4,6 @@
 [submodule "static/fontawesome"]
 	path = static/fontawesome
 	url = https://github.com/FortAwesome/Font-Awesome.git
+[submodule "include/php-graph-sdk"]
+	path = include/php-graph-sdk
+	url = https://github.com/facebook/php-graph-sdk
