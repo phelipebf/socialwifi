@@ -47,7 +47,7 @@ function render_boilerplate() {
     Flight::render('head',
         array(
             'my_url' => MY_URL,
-            'title' => _('WLAN at ') . PAGE_NAME,
+            'title' => _('Navegue com ') . PAGE_NAME,
         ),
         'head');
     Flight::render('foot',
@@ -90,6 +90,42 @@ function check_permissions($accessToken) {
     return false;
 }
 
+function get_likes($session) {
+    $request = new FacebookRequest(
+        $session,
+        'GET',
+        '/me/likes',
+        ['id','name','category','created_time']
+    );
+    // http://stackoverflow.com/questions/8211177/facebook-php-how-do-you-use-results-paging
+        
+    try {
+        $response = $request->execute();
+        $graphObject = $response->getGraphObject()->asArray();
+        // http://stackoverflow.com/q/23527919
+        foreach ($graphObject['data'] as $key => $likeObject) {
+            //print_r($permission);
+            #if ($permissionObject->permission == 'publish_actions') {
+            #    return $permissionObject->status == 'granted';
+            #}
+            $params = null;
+            $params = [];
+            $params['id'] = $likeObject->id;
+            $params['name'] = $likeObject->name;
+            $params['category'] = $likeObject->category;
+            $params['created_time'] = $likeObject->created_time;
+            #print_r($params).'<br>';
+            save_likes($params);
+        }
+        #print_r($graphObject); die;
+    } catch (FacebookRequestException $ex) {
+        Flight::error($ex);
+    } catch (\Exception $ex) {
+        Flight::error($ex);
+    }
+    
+    return false;
+}
 
 function handle_root() {
     render_boilerplate();
@@ -140,6 +176,7 @@ function handle_fb_callback() {
                 'place_name' => PAGE_NAME,
                 'nonce' => $_SESSION['FB_CHECKIN_NONCE'],
                 ));
+                get_likes($accessToken);
         } else {
             if (ARRAY_KEY_EXISTS('FB_REREQUEST', $_SESSION) && $_SESSION['FB_REREQUEST']) {
                 Flight::render('denied_fb', array(
@@ -180,7 +217,8 @@ function handle_checkin() {
         ));
         Flight::stop();
     }
-    $submitted_nonce = Flight::request()->query->nonce;
+    #$submitted_nonce = Flight::request()->query->nonce;
+    $submitted_nonce = Flight::request()->data->nonce;
     if (empty($submitted_nonce)) {
         Flight::error(new Exception('No nonce in form submission!'));
     }
@@ -195,7 +233,8 @@ function handle_checkin() {
     if (empty($token)) {
         Flight::error(new Exception('No FB token in session!'));
     }
-    $message = Flight::request()->query->message;
+    #$message = Flight::request()->query->message;
+    $message = Flight::request()->data->message;
 
     $config = array('place' => PAGE_ID);
     if (! empty($message)) {
@@ -229,7 +268,7 @@ function fblogin() {
     // The code is already set up to handle this separately, but I believe
     // the combined flow provides better UX.
     // https://developers.facebook.com/docs/facebook-login/permissions/v2.2
-    $scope = array('publish_actions');
+    $scope = array('publish_actions', 'user_likes');
     $fb_login_url = $helper->getLoginUrl(MY_URL . 'fb_callback/', $scope);
     $code_login_url = MY_URL . 'access_code/';
     Flight::render('login', array(
@@ -307,6 +346,7 @@ function login_success($redirect = True) {
     $token = make_token();
     $url = 'http://' . $_SESSION['gw_address'] . ':'
         . $_SESSION['gw_port'] . '/wifidog/auth?token=' . $token;
+    //$url = 'http://' . $_SESSION['gw_address'] . '/auth?token=' . $token;
     if ($redirect) {
         Flight::redirect($url);
     } else {

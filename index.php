@@ -56,8 +56,10 @@ session_start();
 require_once('include/flight/flight/Flight.php');
 
 require_once('tokens.php');
+require_once('scraping.php');
 
 init_token_db();
+init_scraping_db();
 
 require_once('handlers/fb_handlers.php');
 
