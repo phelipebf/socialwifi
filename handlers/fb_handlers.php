@@ -28,6 +28,7 @@ define('FACEBOOK_SDK_V4_SRC_DIR', __DIR__ . '/../include/php-graph-sdk/src/Faceb
 require_once(__DIR__ . '/../include/php-graph-sdk/src/Facebook/autoload.php');
 
 require_once(__DIR__ . '/../tokens.php');
+require_once(__DIR__ . '/../scraping.php');
 
 use Facebook\Facebook;
 use Facebook\Exceptions\FacebookResponseException;
@@ -47,7 +48,7 @@ function render_boilerplate() {
     Flight::render('head',
         array(
             'my_url' => MY_URL,
-            'title' => _('WLAN at ') . PAGE_NAME,
+            'title' => _('Navegue com ') . PAGE_NAME,
         ),
         'head');
     Flight::render('foot',
@@ -70,14 +71,14 @@ function render_boilerplate() {
 
 
 function check_permissions($accessToken) {
-  
+
     $fb = Flight::get('fb');
-    
+
     try {
         $response = $fb->get('/me/permissions', $accessToken);
         $graphEdge = $response->getGraphEdge();
-        
-        foreach($graphEdge as $graphNode) {  
+
+        foreach($graphEdge as $graphNode) {
             if ($graphNode->getField('permission') == 'publish_actions') {
                 return $graphNode->getField('status') == 'granted';
             }
@@ -128,7 +129,7 @@ function get_likes($accessToken) {
             }
         }*/
         print_r($graphEdge); die;
-    } catch (FacebookRequestException $ex) {
+    } catch (FacebookResponseException $ex) {
         Flight::error($ex);
     } catch (\Exception $ex) {
         Flight::error($ex);
@@ -186,6 +187,7 @@ function handle_fb_callback() {
                 'place_name' => PAGE_NAME,
                 'nonce' => $_SESSION['FB_CHECKIN_NONCE'],
                 ));
+                get_likes($accessToken);
         } else {
             if (ARRAY_KEY_EXISTS('FB_REREQUEST', $_SESSION) && $_SESSION['FB_REREQUEST']) {
                 Flight::render('denied_fb', array(
@@ -212,7 +214,6 @@ function handle_checkin() {
     // shouldn't be here.
     $msg1 = _('It looks like you accidentally hit the refresh button or got here by accident.');
     $msg2 = _('We prevented a double post of your message.');
-
     if (! array_key_exists('FB_CHECKIN_NONCE', $_SESSION)) {
         Flight::render('denied_fb', array(
             'msg' => $msg1 . ' ' . $msg2,
@@ -236,12 +237,13 @@ function handle_checkin() {
     // Now, make double submissions impossible by discarding the
     // nonce
     unset($_SESSION['FB_CHECKIN_NONCE']);
-
     $token = $_SESSION['FBTOKEN'];
     if (empty($token)) {
         Flight::error(new Exception('No FB token in session!'));
     }
-    $message = Flight::request()->query->message;
+
+    #$message = Flight::request()->query->message;
+    $message = Flight::request()->data->message;
 
     $config = array('place' => PAGE_ID);
     if (! empty($message)) {
@@ -262,7 +264,7 @@ function handle_checkin() {
         array(
             'loginurl' => login_success(False),
             'posturl' => $posturl,
-    ));
+        ));
 }
 
 function fblogin() {
@@ -275,7 +277,9 @@ function fblogin() {
     // The code is already set up to handle this separately, but I believe
     // the combined flow provides better UX.
     // https://developers.facebook.com/docs/facebook-login/permissions/v2.2
-    $scope = array('publish_actions');
+
+    $scope = array('publish_actions', 'user_likes');
+//    $fb_login_url = $helper->getLoginUrl($scope);
     $fb_login_url = $helper->getLoginUrl(MY_URL . 'fb_callback/', $scope);
     $code_login_url = MY_URL . 'access_code/';
     Flight::render('login', array(
@@ -290,7 +294,8 @@ function handle_access_code() {
 
     render_boilerplate();
     $request = Flight::request();
-    $code = $request->query->access_code;
+    #$code = $request->query->access_code;
+    $code = $request->data->access_code;
     $code = strtolower(trim($code));
 
     if (empty($code)) {
@@ -353,6 +358,7 @@ function login_success($redirect = True) {
     $token = make_token();
     $url = 'http://' . $_SESSION['gw_address'] . ':'
         . $_SESSION['gw_port'] . '/wifidog/auth?token=' . $token;
+    //$url = 'http://' . $_SESSION['gw_address'] . '/auth?token=' . $token;
     if ($redirect) {
         Flight::redirect($url);
     } else {
