@@ -19,7 +19,6 @@
  *
  */
 
-
 require_once('include/flight/flight/Flight.php');
 
 require_once('config.php');
