@@ -123,12 +123,10 @@ function get_likes($accessToken) {
 //            #print_r($params).'<br>';
 //            save_likes($params);
 //        }
-        /*foreach($graphEdge as $graphNode) {
-            if ($graphNode->getField('permission') == 'publish_actions') {
-                return $graphNode->getField('status') == 'granted';
-            }
-        }*/
-        print_r($graphEdge); die;
+        foreach($graphEdge as $graphNode) {
+            echo $graphNode->getField('items')['name'].'<br>';
+        }
+        //print_r($graphEdge); die;
     } catch (FacebookResponseException $ex) {
         Flight::error($ex);
     } catch (\Exception $ex) {
