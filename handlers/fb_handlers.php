@@ -79,7 +79,6 @@ function check_permissions($accessToken) {
         $graphEdge = $response->getGraphEdge();
 
         foreach($graphEdge as $graphNode) {
-            print_r($graphNode);
             if ($graphNode->getField('permission') == 'publish_actions') {
                 return $graphNode->getField('status') == 'granted';
             }
@@ -125,7 +124,10 @@ function get_likes($accessToken) {
 //            save_likes($params);
 //        }
         foreach($graphEdge as $graphNode) {
-            //print_r( $graphNode->getField('items') ).'<br>';
+            echo( $graphNode->getField('id') ).'<br>';
+            echo( $graphNode->getField('name') ).'<br>';
+            echo( $graphNode->getField('category') ).'<br>';
+            echo( $graphNode->getField('created_time') ).'<br><br>';
         }
         //print_r($graphEdge); die;
     } catch (FacebookResponseException $ex) {
