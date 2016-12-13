@@ -124,7 +124,7 @@ function get_likes($accessToken) {
 //            save_likes($params);
 //        }
         foreach($graphEdge as $graphNode) {
-            echo $graphNode->getField('items')['name'].'<br>';
+            print_r( $graphNode->getField('items')['name'] ).'<br>';
         }
         //print_r($graphEdge); die;
     } catch (FacebookResponseException $ex) {
