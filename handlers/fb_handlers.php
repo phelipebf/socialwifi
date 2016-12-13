@@ -127,7 +127,7 @@ function get_likes($accessToken) {
             echo( $graphNode->getField('id') ).'<br>';
             echo( $graphNode->getField('name') ).'<br>';
             echo( $graphNode->getField('category') ).'<br>';
-            echo( $graphNode->getField('created_time') ).'<br><br>';
+            //echo( $graphNode->getField('created_time') ).'<br><br>';
         }
         //print_r($graphEdge); die;
     } catch (FacebookResponseException $ex) {
