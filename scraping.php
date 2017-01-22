@@ -42,7 +42,7 @@ function save_likes($params) {
     // but there is no gateway right now
     $db = Flight::db();
     #$stmt = $db->prepare('INSERT INTO likes (fb_id, name, category, created_time) VALUES (:fb_id, :name, :category, :created_time)');
-    $stmt = $db->prepare('INSERT INTO likes (fb_id, name, category, created_time) VALUES (:fb_id, :name, :category)');
+    $stmt = $db->prepare('INSERT INTO likes (fb_id, name, category) VALUES (:fb_id, :name, :category)');
     $stmt->bindParam(':fb_id', $params['id']);
     $stmt->bindParam(':name', $params['name']);
     $stmt->bindParam(':category', $params['category']);
