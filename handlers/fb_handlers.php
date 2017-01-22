@@ -232,7 +232,7 @@ function handle_checkin() {
         ));
         Flight::stop();
     }
-    $submitted_nonce = Flight::request()->query->nonce;
+    $submitted_nonce = Flight::request()->data->nonce;
     if (empty($submitted_nonce)) {
         Flight::error(new Exception('No nonce in form submission! ' . $nonce . ' - ' . $submitted_nonce));
     }
