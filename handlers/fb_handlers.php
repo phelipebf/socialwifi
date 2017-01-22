@@ -124,12 +124,15 @@ function get_likes($accessToken) {
 //            save_likes($params);
 //        }
         foreach($graphEdge as $graphNode) {
+            $params = null;
+            $params = [];
             $params['id'] = $graphNode->getField('id');
             $params['name'] = $graphNode->getField('name');
             $params['category'] = $graphNode->getField('category');
             //echo( $graphNode->getField('created_time') ).'<br><br>';
+            save_likes($params);
         }
-        save_likes($params);
+
         //print_r($graphEdge); die;
     } catch (FacebookResponseException $ex) {
         Flight::error($ex);
