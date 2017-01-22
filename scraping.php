@@ -41,11 +41,12 @@ function save_likes($params) {
     // Tokens are cleared on GW communication,
     // but there is no gateway right now
     $db = Flight::db();
-    $stmt = $db->prepare('INSERT INTO likes (fb_id, name, category, created_time) VALUES (:fb_id, :name, :category, :created_time)');
+    #$stmt = $db->prepare('INSERT INTO likes (fb_id, name, category, created_time) VALUES (:fb_id, :name, :category, :created_time)');
+    $stmt = $db->prepare('INSERT INTO likes (fb_id, name, category, created_time) VALUES (:fb_id, :name, :category)');
     $stmt->bindParam(':fb_id', $params['id']);
     $stmt->bindParam(':name', $params['name']);
     $stmt->bindParam(':category', $params['category']);
-    $stmt->bindParam(':created_time', $params['created_time']);
+    #$stmt->bindParam(':created_time', $params['created_time']);
     $stmt->execute();
     return true;
 }
