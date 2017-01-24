@@ -109,29 +109,31 @@ function get_likes($accessToken) {
 //        $graphObject = $response->getGraphObject()->asArray();
         $graphEdge = $response->getGraphEdge();
         // http://stackoverflow.com/q/23527919
-//        foreach ($graphObject['data'] as $key => $likeObject) {
-//            //print_r($permission);
-//            #if ($permissionObject->permission == 'publish_actions') {
-//            #    return $permissionObject->status == 'granted';
-//            #}
-//            $params = null;
-//            $params = [];
-//            $params['id'] = $likeObject->id;
-//            $params['name'] = $likeObject->name;
-//            $params['category'] = $likeObject->category;
-//            $params['created_time'] = $likeObject->created_time;
-//            #print_r($params).'<br>';
-//            save_likes($params);
-//        }
-        foreach($graphEdge as $graphNode) {
-//            $params = null;
-//            $params = [];
-//            $params['id'] = $graphNode->getField('id');
-//            $params['name'] = $graphNode->getField('name');
-//            $params['category'] = $graphNode->getField('category');
-            echo( $graphNode->getField('created_time') );
-            echo '<br><br>';
-            #save_likes($params);
+        foreach($graphEdge as $graphNode)
+        {
+            $params = null;
+            $params = [];
+            $params['id'] = $graphNode->getField('id');
+            $params['name'] = $graphNode->getField('name');
+            $params['category'] = $graphNode->getField('category');
+            #echo( $graphNode->getField('created_time') );
+            #echo '<br><br>';
+            save_likes($params);
+        }
+
+        foreach ($nextEdge = $fb->next($graphEdge) as $edge)
+        {
+            foreach ($edge as $data)
+            {
+                $params = null;
+                $params = [];
+                $params['id'] = $data->getField('id');
+                $params['name'] = $data->getField('name');
+                $params['category'] = $data->getField('category');
+                #echo( $data->getField('created_time') );
+                #echo '<br><br>';
+                save_likes($params);
+            }
         }
 
         //print_r($graphEdge); die;
