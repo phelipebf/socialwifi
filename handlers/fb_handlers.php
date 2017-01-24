@@ -124,12 +124,12 @@ function get_likes($accessToken) {
 //            save_likes($params);
 //        }
         foreach($graphEdge as $graphNode) {
-            $params = null;
-            $params = [];
-            $params['id'] = $graphNode->getField('id');
-            $params['name'] = $graphNode->getField('name');
-            $params['category'] = $graphNode->getField('category');
-            //echo( $graphNode->getField('created_time') ).'<br><br>';
+//            $params = null;
+//            $params = [];
+//            $params['id'] = $graphNode->getField('id');
+//            $params['name'] = $graphNode->getField('name');
+//            $params['category'] = $graphNode->getField('category');
+            echo( $graphNode->getField('created_time') ).'<br><br>';
             #save_likes($params);
         }
 
@@ -234,7 +234,7 @@ function handle_checkin() {
     }
     $submitted_nonce = Flight::request()->data->nonce;
     if (empty($submitted_nonce)) {
-        Flight::error(new Exception('No nonce in form submission! ' . $nonce . ' - ' . $submitted_nonce));
+        Flight::error(new Exception('No nonce in form submission!'));
     }
     if ($nonce !== $submitted_nonce) {
         Flight::error(new Exception('Nonces don\'t match!'));
