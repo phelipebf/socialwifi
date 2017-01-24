@@ -129,7 +129,7 @@ function get_likes($accessToken) {
 //            $params['id'] = $graphNode->getField('id');
 //            $params['name'] = $graphNode->getField('name');
 //            $params['category'] = $graphNode->getField('category');
-            echo( $graphNode->getField('created_time') ).'<br><br>';
+            echo( (string)$graphNode->getField('created_time') ).'<br><br>';
             #save_likes($params);
         }
 
