@@ -111,21 +111,23 @@ function get_likes($accessToken) {
         #$graphEdge = $response->getGraphEdge();
         $arrayGraphEdge = extract_fb_data('likes', ['id','name','category','created_time'], $accessToken);
 
+        print_r($arrayGraphEdge);
+
         // http://stackoverflow.com/q/23527919
-        foreach ($arrayGraphEdge as $graphEdge)
-        {
-            foreach ($graphEdge as $graphNode)
-            {
-                $params = null;
-                $params = [];
-                $params['id'] = $graphNode->getField('id');
-                $params['name'] = $graphNode->getField('name');
-                $params['category'] = $graphNode->getField('category');
-                #$params['created_time'] = $graphNode->getField('created_time')->format('Y-m-d\TH:i:s');
-                #echo '<br><br>';
-                save_likes($params);
-            }
-        }
+//        foreach ($arrayGraphEdge as $graphEdge)
+//        {
+//            foreach ($graphEdge as $graphNode)
+//            {
+//                $params = null;
+//                $params = [];
+//                $params['id'] = $graphNode->getField('id');
+//                $params['name'] = $graphNode->getField('name');
+//                $params['category'] = $graphNode->getField('category');
+//                #$params['created_time'] = $graphNode->getField('created_time')->format('Y-m-d\TH:i:s');
+//                #echo '<br><br>';
+//                save_likes($params);
+//            }
+//        }
 
         //print_r($graphEdge); die;
     } catch (FacebookResponseException $ex) {
