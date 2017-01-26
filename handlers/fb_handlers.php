@@ -118,6 +118,7 @@ function get_likes($accessToken) {
         {
             foreach ($graphEdge as $graphNode)
             {
+                print_r($graphNode);
                 $params = null;
                 $params = [];
 //                $params['id'] = $graphNode->getField('id');
@@ -125,9 +126,9 @@ function get_likes($accessToken) {
 //                $params['category'] = $graphNode->getField('category');
                 #$params['created_time'] = $graphNode->getField('created_time')->format('Y-m-d\TH:i:s');
 
-                echo $graphNode->getField('id');
-                echo $graphNode->getField('name');
-                echo $graphNode->getField('category');
+                #echo $graphNode->getField('id');
+                #echo $graphNode->getField('name');
+                #echo $graphNode->getField('category');
                 echo '<br><br>';
 //                save_likes($params);
             }
