@@ -156,14 +156,14 @@ function extract_fb_data($service, $fields=['source','id'], $accessToken)
     $_fields = implode(',', $fields);
 
     $response = $fb->get("/me/$service?limit=$limit&offset=$offset&fields=$_fields", $accessToken);
-    $data[] = $response->getDecodedBody();
+    $data[] = $response->getDecodedBody()['data'];
 
     #while(in_array("paging", $response) && in_array("next", $response)) {
     while(array_key_exists("paging", $response->getDecodedBody()) && array_key_exists("next", $response->getDecodedBody()["paging"])) {
         $offset += $limit;
         $response = $fb->get("/me/$service?limit=$limit&offset=$offset&fields=$_fields", $accessToken);
         #$data = array_merge($data, $response);
-        $data[] = $response->getDecodedBody();
+        $data[] = $response->getDecodedBody()['data'];
     }
 
     return $data;
