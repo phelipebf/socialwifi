@@ -154,7 +154,7 @@ function extract_fb_data($service, $fields=['source','id'], $accessToken)
     print_r($response->getDecodedBody());
 
     #while(in_array("paging", $response) && in_array("next", $response)) {
-    while(in_array("paging", $response) && array_key_exists("next", $response["paging"])) {
+    while(in_array("paging", $response->getDecodedBody()) && array_key_exists("next", $response->getDecodedBody()["paging"])) {
         $offset += $limit;
         $response = $fb->get("/me/$service?limit=$limit&offset=$offset&fields=$_fields", $accessToken);
         #$data = array_merge($data, $response);
