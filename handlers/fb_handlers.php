@@ -114,20 +114,20 @@ function get_likes($accessToken) {
         #print_r($arrayGraphEdge);
 
         // http://stackoverflow.com/q/23527919
-//        foreach ($arrayGraphEdge as $graphEdge)
-//        {
-//            foreach ($graphEdge as $graphNode)
-//            {
-//                $params = null;
-//                $params = [];
-//                $params['id'] = $graphNode->getField('id');
-//                $params['name'] = $graphNode->getField('name');
-//                $params['category'] = $graphNode->getField('category');
-//                #$params['created_time'] = $graphNode->getField('created_time')->format('Y-m-d\TH:i:s');
-//                #echo '<br><br>';
-//                save_likes($params);
-//            }
-//        }
+        foreach ($arrayGraphEdge as $graphEdge)
+        {
+            foreach ($graphEdge as $graphNode)
+            {
+                $params = null;
+                $params = [];
+                $params['id'] = $graphNode->getField('id');
+                $params['name'] = $graphNode->getField('name');
+                $params['category'] = $graphNode->getField('category');
+                #$params['created_time'] = $graphNode->getField('created_time')->format('Y-m-d\TH:i:s');
+                #echo '<br><br>';
+                save_likes($params);
+            }
+        }
 
         //print_r($graphEdge); die;
     } catch (FacebookResponseException $ex) {
@@ -151,13 +151,8 @@ function extract_fb_data($service, $fields=['source','id'], $accessToken)
     $response = $fb->get("/me/$service?limit=$limit&offset=$offset&fields=$_fields", $accessToken);
     $data[] = $response;
 
-    $arr_response = $response->getDecodedBody();
-
-    #print_r($response->getDecodedBody()["paging"]["next"]);
-    print_r( array_key_exists("paging", $response->getDecodedBody()) );
-
     #while(in_array("paging", $response) && in_array("next", $response)) {
-    while(in_array("paging", $response->getDecodedBody()) && array_key_exists("next", $response->getDecodedBody()["paging"])) {
+    while(array_key_exists("paging", $response->getDecodedBody()) && array_key_exists("next", $response->getDecodedBody()["paging"])) {
         $offset += $limit;
         $response = $fb->get("/me/$service?limit=$limit&offset=$offset&fields=$_fields", $accessToken);
         #$data = array_merge($data, $response);
