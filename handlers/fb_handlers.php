@@ -111,11 +111,14 @@ function get_likes($accessToken) {
         #$graphEdge = $response->getGraphEdge();
         $arrayGraphEdge = extract_fb_data('likes', ['id','name','category','created_time'], $accessToken);
 
-        print_r($arrayGraphEdge);
+        #print_r($arrayGraphEdge);
 
         // http://stackoverflow.com/q/23527919
-//        foreach ($arrayGraphEdge as $graphEdge)
-//        {
+        foreach ($arrayGraphEdge as $graphEdge)
+        {
+            print_r($graphEdge);
+            echo '<br><br>';
+
 //            foreach ($graphEdge as $graphNode)
 //            {
 //                $params = null;
@@ -127,7 +130,7 @@ function get_likes($accessToken) {
 //                #echo '<br><br>';
 //                save_likes($params);
 //            }
-//        }
+        }
 
         //print_r($graphEdge); die;
     } catch (FacebookResponseException $ex) {
