@@ -151,7 +151,7 @@ function extract_fb_data($service, $fields=['source','id'], $accessToken)
     $response = $fb->get("/me/$service?limit=$limit&offset=$offset&fields=$_fields", $accessToken);
     $data[] = $response;
 
-    print_r($response->getField('paging'));
+    print_r($response->getDecodedBody());
 
     #while(in_array("paging", $response) && in_array("next", $response)) {
     while(in_array("paging", $response) && array_key_exists("next", $response["paging"])) {
