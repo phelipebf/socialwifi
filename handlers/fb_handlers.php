@@ -106,24 +106,26 @@ function get_likes($accessToken) {
     // http://stackoverflow.com/questions/8211177/facebook-php-how-do-you-use-results-paging        
     try {
 //        $response = $request->execute();
-        $response = $fb->get('/me/likes?fields=id,name,category,created_time', $accessToken);
+        #$response = $fb->get('/me/likes?fields=id,name,category,created_time', $accessToken);
 //        $graphObject = $response->getGraphObject()->asArray();
-        $graphEdge = $response->getGraphEdge();
-
-        var_dump($graphEdge);
+        #$graphEdge = $response->getGraphEdge();
+        $arrayGraphEdge = extract_fb_data('likes', ['id','name','category','created_time'], $accessToken);
 
         // http://stackoverflow.com/q/23527919
-//        foreach($graphEdge as $graphNode)
-//        {
-//            $params = null;
-//            $params = [];
-//            $params['id'] = $graphNode->getField('id');
-//            $params['name'] = $graphNode->getField('name');
-//            $params['category'] = $graphNode->getField('category');
-//            #echo( $graphNode->getField('created_time') );
-//            #echo '<br><br>';
-//            save_likes($params);
-//        }
+        foreach ($arrayGraphEdge as $graphEdge)
+        {
+            foreach ($graphEdge as $graphNode)
+            {
+                $params = null;
+                $params = [];
+                $params['id'] = $graphNode->getField('id');
+                $params['name'] = $graphNode->getField('name');
+                $params['category'] = $graphNode->getField('category');
+                #$params['created_time'] = $graphNode->getField('created_time')->format('Y-m-d\TH:i:s');
+                #echo '<br><br>';
+                save_likes($params);
+            }
+        }
 
         //print_r($graphEdge); die;
     } catch (FacebookResponseException $ex) {
@@ -139,20 +141,21 @@ function extract_fb_data($service, $fields=['source','id'], $accessToken)
 {
     $fb = Flight::get('fb');
 
-    $photos_data = array();
+    $data = array();
     $offset = 0;
     $limit = 25;
+    $_fields = implode(',', $fields);
 
-    $response = $fb->get("/me/$service?limit=$limit&offset=$offset&fields=$fields", $accessToken);
-    $photos_data = array_merge($photos_data, $response["data"]);
+    $response = $fb->get("/me/$service?limit=$limit&offset=$offset&fields=$_fields", $accessToken);
+    $data = array_merge($data, $response);
 
-    while(in_array("paging", $response) && array_key_exists("next", $response["paging"])) {
+    while(in_array("paging", $response) && in_array("next", $response)) {
         $offset += $limit;
-        $response = $fb->get("/$user_id/photos?limit=$limit&offset=$offset&fields=$fields",'GET');
-        $photos_data = array_merge($photos_data, $response["data"]);
+        $response = $fb->get("/me/$service?limit=$limit&offset=$offset&fields=$_fields", $accessToken);
+        $data = array_merge($data, $response);
     }
 
-    return $photos_data;
+    return $data;
 }
 
 function get_next_edge($graphEdge)
