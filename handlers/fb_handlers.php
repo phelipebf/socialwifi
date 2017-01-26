@@ -125,11 +125,10 @@ function get_likes($accessToken) {
 //                $params['category'] = $graphNode->getField('category');
                 #$params['created_time'] = $graphNode->getField('created_time')->format('Y-m-d\TH:i:s');
 
-                echo $graphNode['id'];
-                echo $graphNode['name'];
-                echo $graphNode['category'];
-                echo '<br><br>';
-//                save_likes($params);
+                $params['id'] = $graphNode['id'];
+                $params['name'] = $graphNode['name'];
+                $params['category'] = $graphNode['category'];
+                save_likes($params);
             }
         }
 
