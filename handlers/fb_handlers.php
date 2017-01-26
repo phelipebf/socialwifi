@@ -94,6 +94,7 @@ function check_permissions($accessToken) {
 function get_likes($accessToken) {
     
     $fb = Flight::get('fb');
+    $paginacao = false;
     
 //    $request = new FacebookRequest(
 //        $session,
@@ -105,36 +106,24 @@ function get_likes($accessToken) {
     // http://stackoverflow.com/questions/8211177/facebook-php-how-do-you-use-results-paging        
     try {
 //        $response = $request->execute();
-        $response = $fb->get('/me/likes', $accessToken);
+        $response = $fb->get('/me/likes?fields=id,name,category,created_time', $accessToken);
 //        $graphObject = $response->getGraphObject()->asArray();
         $graphEdge = $response->getGraphEdge();
-        // http://stackoverflow.com/q/23527919
-        foreach($graphEdge as $graphNode)
-        {
-            $params = null;
-            $params = [];
-            $params['id'] = $graphNode->getField('id');
-            $params['name'] = $graphNode->getField('name');
-            $params['category'] = $graphNode->getField('category');
-            #echo( $graphNode->getField('created_time') );
-            #echo '<br><br>';
-            save_likes($params);
-        }
 
-        foreach ($nextEdge = $fb->next($graphEdge) as $edge)
-        {
-            foreach ($edge as $data)
-            {
-                $params = null;
-                $params = [];
-                $params['id'] = $data->getField('id');
-                $params['name'] = $data->getField('name');
-                $params['category'] = $data->getField('category');
-                #echo( $data->getField('created_time') );
-                #echo '<br><br>';
-                save_likes($params);
-            }
-        }
+        var_dump($graphEdge);
+
+        // http://stackoverflow.com/q/23527919
+//        foreach($graphEdge as $graphNode)
+//        {
+//            $params = null;
+//            $params = [];
+//            $params['id'] = $graphNode->getField('id');
+//            $params['name'] = $graphNode->getField('name');
+//            $params['category'] = $graphNode->getField('category');
+//            #echo( $graphNode->getField('created_time') );
+//            #echo '<br><br>';
+//            save_likes($params);
+//        }
 
         //print_r($graphEdge); die;
     } catch (FacebookResponseException $ex) {
@@ -144,6 +133,42 @@ function get_likes($accessToken) {
     }
     
     return false;
+}
+
+function extract_fb_data($service, $fields=['source','id'], $accessToken)
+{
+    $fb = Flight::get('fb');
+
+    $photos_data = array();
+    $offset = 0;
+    $limit = 25;
+
+    $response = $fb->get("/me/$service?limit=$limit&offset=$offset&fields=$fields", $accessToken);
+    $photos_data = array_merge($photos_data, $response["data"]);
+
+    while(in_array("paging", $response) && array_key_exists("next", $response["paging"])) {
+        $offset += $limit;
+        $response = $fb->get("/$user_id/photos?limit=$limit&offset=$offset&fields=$fields",'GET');
+        $photos_data = array_merge($photos_data, $response["data"]);
+    }
+
+    return $photos_data;
+}
+
+function get_next_edge($graphEdge)
+{
+    $fb = Flight::get('fb');
+
+    $nextEdge = $fb->next($graphEdge);
+
+    if($nextEdge == null)
+    {
+        return false;
+    }
+    else
+    {
+        return $nextEdge;
+    }
 }
 
 function handle_root() {
