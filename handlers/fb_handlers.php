@@ -111,7 +111,7 @@ function get_likes($accessToken) {
         #$graphEdge = $response->getGraphEdge();
         $arrayGraphEdge = extract_fb_data('likes', ['id','name','category','created_time'], $accessToken);
 
-        print_r($arrayGraphEdge);
+        var_dump($arrayGraphEdge);
 
         // http://stackoverflow.com/q/23527919
 //        foreach ($arrayGraphEdge as $graphEdge)
@@ -149,12 +149,13 @@ function extract_fb_data($service, $fields=['source','id'], $accessToken)
     $_fields = implode(',', $fields);
 
     $response = $fb->get("/me/$service?limit=$limit&offset=$offset&fields=$_fields", $accessToken);
-    $data = array_merge($data, $response);
+    $data[] = $response;
 
     while(in_array("paging", $response) && in_array("next", $response)) {
         $offset += $limit;
         $response = $fb->get("/me/$service?limit=$limit&offset=$offset&fields=$_fields", $accessToken);
-        $data = array_merge($data, $response);
+        #$data = array_merge($data, $response);
+        $data[] = $response;
     }
 
     return $data;
