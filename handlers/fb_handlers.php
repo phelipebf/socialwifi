@@ -116,20 +116,21 @@ function get_likes($accessToken) {
         // http://stackoverflow.com/q/23527919
         foreach ($arrayGraphEdge as $graphEdge)
         {
-            print_r($graphEdge);
-            echo '<br><br>';
-
-//            foreach ($graphEdge as $graphNode)
-//            {
-//                $params = null;
-//                $params = [];
+            foreach ($graphEdge as $graphNode)
+            {
+                $params = null;
+                $params = [];
 //                $params['id'] = $graphNode->getField('id');
 //                $params['name'] = $graphNode->getField('name');
 //                $params['category'] = $graphNode->getField('category');
-//                #$params['created_time'] = $graphNode->getField('created_time')->format('Y-m-d\TH:i:s');
-//                #echo '<br><br>';
+                #$params['created_time'] = $graphNode->getField('created_time')->format('Y-m-d\TH:i:s');
+
+                echo $graphNode->getField('id');
+                echo $graphNode->getField('name');
+                echo $graphNode->getField('category');
+                echo '<br><br>';
 //                save_likes($params);
-//            }
+            }
         }
 
         //print_r($graphEdge); die;
