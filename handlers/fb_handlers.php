@@ -109,7 +109,7 @@ function get_likes($accessToken) {
         #$response = $fb->get('/me/likes?fields=id,name,category,created_time', $accessToken);
 //        $graphObject = $response->getGraphObject()->asArray();
         #$graphEdge = $response->getGraphEdge();
-        $arrayGraphEdge = extract_fb_data('likes', ['id','name','category','created_time'], $accessToken);
+        $arrayGraphEdge = extract_fb_data('likes', ['id','name','category','created_time'], 50, $accessToken);
 
         #print_r($arrayGraphEdge);
 
@@ -142,13 +142,13 @@ function get_likes($accessToken) {
     return false;
 }
 
-function extract_fb_data($service, $fields=['source','id'], $accessToken)
+function extract_fb_data($service, $fields=['source','id'], $limit=25, $accessToken)
 {
     $fb = Flight::get('fb');
 
     $data = array();
     $offset = 0;
-    $limit = 25;
+    #$limit = 25;
     $_fields = implode(',', $fields);
 
     $response = $fb->get("/me/$service?limit=$limit&offset=$offset&fields=$_fields", $accessToken);
