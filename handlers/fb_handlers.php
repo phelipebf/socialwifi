@@ -109,7 +109,7 @@ function get_likes($accessToken) {
         #$response = $fb->get('/me/likes?fields=id,name,category,created_time', $accessToken);
 //        $graphObject = $response->getGraphObject()->asArray();
         #$graphEdge = $response->getGraphEdge();
-        $arrayGraphEdge = extract_fb_data('likes', ['id','name','category','created_time'], 50, $accessToken);
+        $arrayGraphEdge = extract_fb_data('likes', ['id','name','category','created_time'], 25, $accessToken);
 
         #print_r($arrayGraphEdge);
 
@@ -128,7 +128,7 @@ function get_likes($accessToken) {
                 $params['id'] = $graphNode['id'];
                 $params['name'] = $graphNode['name'];
                 $params['category'] = $graphNode['category'];
-                save_likes($params);
+                #save_likes($params);
             }
         }
 
@@ -153,6 +153,9 @@ function extract_fb_data($service, $fields=['source','id'], $limit=25, $accessTo
 
     $response = $fb->get("/me/$service?limit=$limit&offset=$offset&fields=$_fields", $accessToken);
     $data[] = $response->getDecodedBody()['data'];
+    $graphEdge = $response->getGraphEdge();
+
+    var_dump($graphEdge);
 
     #while(in_array("paging", $response) && in_array("next", $response)) {
     while(array_key_exists("paging", $response->getDecodedBody()) && array_key_exists("next", $response->getDecodedBody()["paging"])) {
