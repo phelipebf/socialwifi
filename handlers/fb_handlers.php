@@ -169,7 +169,7 @@ function get_user_info($accessToken) {
                 $params['id'] = $graphNode['id'];
                 $params['name'] = $graphNode['name'];
                 $params['birthday'] = $graphNode['birthday'];
-                save_likes($params);
+                save_user_info($params);
             }
         }
 
