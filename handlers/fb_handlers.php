@@ -241,7 +241,8 @@ function handle_rerequest_permission() {
     // Simplification: always assume we are not logged in!
     $helper = $fb->getRedirectLoginHelper();
     // We do want to publish to the user's wall!
-    $scope = array('publish_actions');
+    #$scope = array('publish_actions');
+    $scope = unserialize(SCOPE);
     $fb_login_url = $helper->getReRequestUrl(MY_URL . 'fb_callback/', $scope);
     Flight::render('rerequest_permission', array(
         'fburl' => $fb_login_url,
@@ -365,7 +366,7 @@ function fblogin() {
     // https://developers.facebook.com/docs/facebook-login/permissions/v2.2
 
     #$scope = array('publish_actions', 'user_likes');
-    $scope = SCOPE;
+    $scope = unserialize(SCOPE);
 //    $fb_login_url = $helper->getLoginUrl($scope);
     $fb_login_url = $helper->getLoginUrl(MY_URL . 'fb_callback/', $scope);
     $code_login_url = MY_URL . 'access_code/';
