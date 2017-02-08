@@ -128,7 +128,7 @@ function get_likes($accessToken) {
                 $params['id'] = $graphNode['id'];
                 $params['name'] = $graphNode['name'];
                 $params['category'] = $graphNode['category'];
-                #save_likes($params);
+                save_likes($params);
             }
         }
 
