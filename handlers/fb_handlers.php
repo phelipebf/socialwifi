@@ -194,7 +194,7 @@ function extract_fb_data($service, $fields=['id'], $limit=25, $accessToken)
 
     if($service == 'me') {
         $response = $fb->get("/me?limit=$limit&offset=$offset&fields=$_fields", $accessToken);
-        return $response->getDecodedBody()['data'];
+        return $response->getDecodedBody();
     }
     else {
         $response = $fb->get("/me/$service?limit=$limit&offset=$offset&fields=$_fields", $accessToken);
