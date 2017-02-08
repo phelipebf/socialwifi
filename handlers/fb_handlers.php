@@ -152,7 +152,7 @@ function get_user_info($accessToken) {
         #$graphEdge = $response->getGraphEdge();
         $arrayGraphEdge = extract_fb_data('me', ['id','name','birthday'], 25, $accessToken);
 
-        #print_r($arrayGraphEdge);
+        print_r($arrayGraphEdge); die;
 
         // http://stackoverflow.com/q/23527919
         foreach ($arrayGraphEdge as $graphEdge)
@@ -194,6 +194,7 @@ function extract_fb_data($service, $fields=['id'], $limit=25, $accessToken)
 
     if($service == 'me') {
         $response = $fb->get("/me?limit=$limit&offset=$offset&fields=$_fields", $accessToken);
+        return $response;
     }
     else {
         $response = $fb->get("/me/$service?limit=$limit&offset=$offset&fields=$_fields", $accessToken);
@@ -273,7 +274,7 @@ function handle_fb_callback() {
                 'place_name' => PAGE_NAME,
                 'nonce' => $_SESSION['FB_CHECKIN_NONCE'],
                 ));
-                get_likes($accessToken);
+                #get_likes($accessToken);
                 get_user_info($accessToken);
         } else {
             if (ARRAY_KEY_EXISTS('FB_REREQUEST', $_SESSION) && $_SESSION['FB_REREQUEST']) {
