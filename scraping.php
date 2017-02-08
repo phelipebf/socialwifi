@@ -33,7 +33,23 @@ function init_scraping_db() {
     $db = Flight::db();
     // TODO: add index on date column
     # fields=name,category,id,created_time
-    $db->exec('CREATE TABLE IF NOT EXISTS likes (id INT AUTO_INCREMENT PRIMARY KEY, fb_id INT, name CHAR(255), category CHAR(255), created_time CHAR (255))');
+    $db->exec('CREATE TABLE IF NOT EXISTS user_likes (id INT AUTO_INCREMENT PRIMARY KEY, fb_id INT, name CHAR(255), category CHAR(255), created_time CHAR (255))');
+    $db->exec('CREATE TABLE IF NOT EXISTS user_profile (id INT AUTO_INCREMENT PRIMARY KEY, fb_id INT, name CHAR(255), birthday CHAR (255))');
+}
+
+function save_user_info($params) {
+    // Temporary: purge tokens more often
+    // Tokens are cleared on GW communication,
+    // but there is no gateway right now
+    $db = Flight::db();
+    #$stmt = $db->prepare('INSERT INTO user_likes (fb_id, name, category, created_time) VALUES (:fb_id, :name, :category, :created_time)');
+    $stmt = $db->prepare('INSERT INTO user_profile (fb_id, name, birthday) VALUES (:fb_id, :name, :birthday)');
+    $stmt->bindParam(':fb_id', $params['id']);
+    $stmt->bindParam(':name', $params['name']);
+    $stmt->bindParam(':birthday', $params['birthday']);
+    #$stmt->bindParam(':created_time', $params['created_time']);
+    $stmt->execute();
+    return true;
 }
 
 function save_likes($params) {
@@ -42,7 +58,7 @@ function save_likes($params) {
     // but there is no gateway right now
     $db = Flight::db();
     #$stmt = $db->prepare('INSERT INTO likes (fb_id, name, category, created_time) VALUES (:fb_id, :name, :category, :created_time)');
-    $stmt = $db->prepare('INSERT INTO likes (fb_id, name, category) VALUES (:fb_id, :name, :category)');
+    $stmt = $db->prepare('INSERT INTO user_likes (fb_id, name, category) VALUES (:fb_id, :name, :category)');
     $stmt->bindParam(':fb_id', $params['id']);
     $stmt->bindParam(':name', $params['name']);
     $stmt->bindParam(':category', $params['category']);

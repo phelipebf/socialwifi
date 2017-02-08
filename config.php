@@ -32,6 +32,11 @@ define('PAGE_ID', '1070986626316571');
 // e.g. "Log in at PAGE_NAME"
 define('PAGE_NAME', 'Social Wifi');
 
+// Facebook permissions scope
+// Scope of permissions to retrieve on facebook authentication
+// e.g. 'public_profile', 'friends_list', 'publish_actions', 'user_likes'
+define('SCOPE', array('public_profile', 'publish_actions', 'user_likes'));
+
 // The URL where this script lives
 // This will typically a directory as the .htaccess
 // rewrites all requests to index.php

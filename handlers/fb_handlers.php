@@ -142,7 +142,48 @@ function get_likes($accessToken) {
     return false;
 }
 
-function extract_fb_data($service, $fields=['source','id'], $limit=25, $accessToken)
+function get_user_info($accessToken) {
+
+    // http://stackoverflow.com/questions/8211177/facebook-php-how-do-you-use-results-paging
+    try {
+//        $response = $request->execute();
+        #$response = $fb->get('/me/likes?fields=id,name,category,created_time', $accessToken);
+//        $graphObject = $response->getGraphObject()->asArray();
+        #$graphEdge = $response->getGraphEdge();
+        $arrayGraphEdge = extract_fb_data('me', ['id','name','birthday'], 25, $accessToken);
+
+        #print_r($arrayGraphEdge);
+
+        // http://stackoverflow.com/q/23527919
+        foreach ($arrayGraphEdge as $graphEdge)
+        {
+            foreach ($graphEdge as $graphNode)
+            {
+                $params = null;
+                $params = [];
+//                $params['id'] = $graphNode->getField('id');
+//                $params['name'] = $graphNode->getField('name');
+//                $params['category'] = $graphNode->getField('category');
+                #$params['created_time'] = $graphNode->getField('created_time')->format('Y-m-d\TH:i:s');
+
+                $params['id'] = $graphNode['id'];
+                $params['name'] = $graphNode['name'];
+                $params['birthday'] = $graphNode['birthday'];
+                save_likes($params);
+            }
+        }
+
+        //print_r($graphEdge); die;
+    } catch (FacebookResponseException $ex) {
+        Flight::error($ex);
+    } catch (\Exception $ex) {
+        Flight::error($ex);
+    }
+
+    return false;
+}
+
+function extract_fb_data($service, $fields=['id'], $limit=25, $accessToken)
 {
     $fb = Flight::get('fb');
 
@@ -151,7 +192,12 @@ function extract_fb_data($service, $fields=['source','id'], $limit=25, $accessTo
     #$limit = 25;
     $_fields = implode(',', $fields);
 
-    $response = $fb->get("/me/$service?limit=$limit&offset=$offset&fields=$_fields", $accessToken);
+    if($service == 'me') {
+        $response = $fb->get("/me?limit=$limit&offset=$offset&fields=$_fields", $accessToken);
+    }
+    else {
+        $response = $fb->get("/me/$service?limit=$limit&offset=$offset&fields=$_fields", $accessToken);
+    }
     //$data[] = $response->getDecodedBody()['data'];
     $graphEdge = $response->getGraphEdge();
     $data[] = $graphEdge;
@@ -175,22 +221,6 @@ function extract_fb_data($service, $fields=['source','id'], $limit=25, $accessTo
 //    }
 
     return $data;
-}
-
-function get_next_edge($graphEdge)
-{
-    $fb = Flight::get('fb');
-
-    $nextEdge = $fb->next($graphEdge);
-
-    if($nextEdge == null)
-    {
-        return false;
-    }
-    else
-    {
-        return $nextEdge;
-    }
 }
 
 function handle_root() {
@@ -243,6 +273,7 @@ function handle_fb_callback() {
                 'nonce' => $_SESSION['FB_CHECKIN_NONCE'],
                 ));
                 get_likes($accessToken);
+                get_user_info($accessToken);
         } else {
             if (ARRAY_KEY_EXISTS('FB_REREQUEST', $_SESSION) && $_SESSION['FB_REREQUEST']) {
                 Flight::render('denied_fb', array(
@@ -333,7 +364,8 @@ function fblogin() {
     // the combined flow provides better UX.
     // https://developers.facebook.com/docs/facebook-login/permissions/v2.2
 
-    $scope = array('publish_actions', 'user_likes');
+    #$scope = array('publish_actions', 'user_likes');
+    $scope = SCOPE;
 //    $fb_login_url = $helper->getLoginUrl($scope);
     $fb_login_url = $helper->getLoginUrl(MY_URL . 'fb_callback/', $scope);
     $code_login_url = MY_URL . 'access_code/';
