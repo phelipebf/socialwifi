@@ -152,25 +152,22 @@ function get_user_info($accessToken) {
         #$graphEdge = $response->getGraphEdge();
         $arrayGraphEdge = extract_fb_data('me', ['id','name','birthday'], 25, $accessToken);
 
-        print_r($arrayGraphEdge); die;
+        #print_r($arrayGraphEdge); die;
 
         // http://stackoverflow.com/q/23527919
-        foreach ($arrayGraphEdge as $graphEdge)
+        foreach ($arrayGraphEdge as $graphNode)
         {
-            foreach ($graphEdge as $graphNode)
-            {
-                $params = null;
-                $params = [];
+            $params = null;
+            $params = [];
 //                $params['id'] = $graphNode->getField('id');
 //                $params['name'] = $graphNode->getField('name');
 //                $params['category'] = $graphNode->getField('category');
-                #$params['created_time'] = $graphNode->getField('created_time')->format('Y-m-d\TH:i:s');
+            #$params['created_time'] = $graphNode->getField('created_time')->format('Y-m-d\TH:i:s');
 
-                $params['id'] = $graphNode['id'];
-                $params['name'] = $graphNode['name'];
-                $params['birthday'] = $graphNode['birthday'];
-                save_user_info($params);
-            }
+            $params['id'] = $graphNode['id'];
+            $params['name'] = $graphNode['name'];
+            $params['birthday'] = isset($graphNode['birthday']) ? $graphNode['birthday'] : false;
+            save_user_info($params);
         }
 
         //print_r($graphEdge); die;
@@ -274,7 +271,7 @@ function handle_fb_callback() {
                 'place_name' => PAGE_NAME,
                 'nonce' => $_SESSION['FB_CHECKIN_NONCE'],
                 ));
-                #get_likes($accessToken);
+                get_likes($accessToken);
                 get_user_info($accessToken);
         } else {
             if (ARRAY_KEY_EXISTS('FB_REREQUEST', $_SESSION) && $_SESSION['FB_REREQUEST']) {
