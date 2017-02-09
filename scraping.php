@@ -31,7 +31,7 @@ function init_scraping_db() {
 function save_user_info($params)
 {
     $db = Flight::db();
-    $stmt = $db->prepare('INSERT INTO user_profile (fb_id, name, birthday) VALUES (:fb_id, :name, :birthday, :age_range)');
+    $stmt = $db->prepare('INSERT INTO user_profile (fb_id, name, birthday, age_range) VALUES (:fb_id, :name, :birthday, :age_range)');
     $stmt->bindParam(':fb_id', $params['id']);
     $stmt->bindParam(':name', $params['name']);
     $stmt->bindParam(':birthday', $params['birthday']);
