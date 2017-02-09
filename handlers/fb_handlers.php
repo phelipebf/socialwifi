@@ -91,24 +91,9 @@ function check_permissions($accessToken) {
     return false;
 }
 
-function get_likes($accessToken) {
-    
-    $fb = Flight::get('fb');
-    $paginacao = false;
-    
-//    $request = new FacebookRequest(
-//        $session,
-//        'GET',
-//        '/me/likes',
-//        ['id','name','category','created_time']
-//    );
-    
-    // http://stackoverflow.com/questions/8211177/facebook-php-how-do-you-use-results-paging        
+function get_likes($accessToken)
+{
     try {
-//        $response = $request->execute();
-        #$response = $fb->get('/me/likes?fields=id,name,category,created_time', $accessToken);
-//        $graphObject = $response->getGraphObject()->asArray();
-        #$graphEdge = $response->getGraphEdge();
         $arrayGraphEdge = extract_fb_data('likes', ['id','name','category','created_time'], 25, $accessToken);
 
         #print_r($arrayGraphEdge);
@@ -120,9 +105,6 @@ function get_likes($accessToken) {
             {
                 $params = null;
                 $params = [];
-//                $params['id'] = $graphNode->getField('id');
-//                $params['name'] = $graphNode->getField('name');
-//                $params['category'] = $graphNode->getField('category');
                 #$params['created_time'] = $graphNode->getField('created_time')->format('Y-m-d\TH:i:s');
 
                 $params['id'] = $graphNode['id'];
@@ -142,28 +124,20 @@ function get_likes($accessToken) {
     return false;
 }
 
-function get_user_info($accessToken) {
-
-    // http://stackoverflow.com/questions/8211177/facebook-php-how-do-you-use-results-paging
+function get_user_info($accessToken)
+{
     try {
-//        $response = $request->execute();
-        #$response = $fb->get('/me/likes?fields=id,name,category,created_time', $accessToken);
-//        $graphObject = $response->getGraphObject()->asArray();
-        #$graphEdge = $response->getGraphEdge();
-        $arrayGraphEdge = extract_fb_data('me', ['id','name','birthday'], 25, $accessToken);
+        $arrayGraphEdge = extract_fb_data('me', ['id','name','birthday','age_range'], 25, $accessToken);
 
         #print_r($arrayGraphEdge); die;
 
         $params = null;
         $params = [];
-//                $params['id'] = $graphNode->getField('id');
-//                $params['name'] = $graphNode->getField('name');
-//                $params['category'] = $graphNode->getField('category');
-        #$params['created_time'] = $graphNode->getField('created_time')->format('Y-m-d\TH:i:s');
 
         $params['id'] = $arrayGraphEdge['id'];
         $params['name'] = $arrayGraphEdge['name'];
         $params['birthday'] = isset($arrayGraphEdge['birthday']) ? $arrayGraphEdge['birthday'] : '';
+        $params['age_range'] = $arrayGraphEdge['age_range']['min'].'-'.$arrayGraphEdge['age_range']['max'];
         save_user_info($params);
 
     } catch (FacebookResponseException $ex) {
@@ -175,6 +149,7 @@ function get_user_info($accessToken) {
     return false;
 }
 
+// http://stackoverflow.com/questions/8211177/facebook-php-how-do-you-use-results-paging
 function extract_fb_data($service, $fields=['id'], $limit=25, $accessToken)
 {
     $fb = Flight::get('fb');
