@@ -129,7 +129,7 @@ function get_user_info($accessToken)
     try {
         $arrayGraphEdge = extract_fb_data('me', ['id','name','birthday','about','age_range'], 25, $accessToken);
 
-        #print_r($arrayGraphEdge); die;
+        print_r($arrayGraphEdge); die;
 
         $params = null;
         $params = [];
@@ -140,7 +140,7 @@ function get_user_info($accessToken)
         $params['about'] = isset($arrayGraphEdge['about']) ? $arrayGraphEdge['about'] : '';
         #$params['age_range'] = isset($arrayGraphEdge['age_range']) ? implode('-', $arrayGraphEdge['age_range']) : '';
         $params['age_range'] = '';
-        save_user_info($params);
+        #save_user_info($params);
 
     } catch (FacebookResponseException $ex) {
         Flight::error($ex);
