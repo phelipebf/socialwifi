@@ -96,7 +96,7 @@ function get_likes($accessToken)
     try {
         $arrayGraphEdge = extract_fb_data('likes', ['id','name','category','created_time'], 25, $accessToken);
 
-        #print_r($arrayGraphEdge);
+        print_r($arrayGraphEdge); die;
 
         // http://stackoverflow.com/q/23527919
         foreach ($arrayGraphEdge as $graphEdge)
@@ -105,11 +105,11 @@ function get_likes($accessToken)
             {
                 $params = null;
                 $params = [];
-                #$params['created_time'] = $graphNode->getField('created_time')->format('Y-m-d\TH:i:s');
 
                 $params['id'] = $graphNode['id'];
                 $params['name'] = $graphNode['name'];
                 $params['category'] = $graphNode['category'];
+                #$params['created_time'] = $graphNode->getField('created_time')->format('Y-m-d\TH:i:s');
                 #save_likes($params);
             }
         }
@@ -129,7 +129,7 @@ function get_user_info($accessToken)
     try {
         $arrayGraphEdge = extract_fb_data('me', ['id','name','birthday','age_range'], 25, $accessToken);
 
-        print_r($arrayGraphEdge); die;
+        #print_r($arrayGraphEdge); die;
 
         $params = null;
         $params = [];
@@ -137,8 +137,8 @@ function get_user_info($accessToken)
         $params['id'] = $arrayGraphEdge['id'];
         $params['name'] = $arrayGraphEdge['name'];
         $params['birthday'] = isset($arrayGraphEdge['birthday']) ? $arrayGraphEdge['birthday'] : '';
-        $params['age_range'] = $arrayGraphEdge['age_range']['min'].'-'.$arrayGraphEdge['age_range']['max'];
-        save_user_info($params);
+        $params['age_range'] = isset($arrayGraphEdge['age_range']) ? implode('-', $arrayGraphEdge['age_range']) : '';
+        #save_user_info($params);
 
     } catch (FacebookResponseException $ex) {
         Flight::error($ex);
