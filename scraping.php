@@ -25,16 +25,17 @@ function init_scraping_db() {
     $db->exec('CREATE TABLE IF NOT EXISTS user_likes (id INT AUTO_INCREMENT PRIMARY KEY, fb_id INT, name CHAR(255), category CHAR(255), created_time CHAR (255))');
 
     # fields=id,fb_id,name,first_name,middle_name,last_name,birthday
-    $db->exec('CREATE TABLE IF NOT EXISTS user_profile (id INT AUTO_INCREMENT PRIMARY KEY, fb_id INT, name CHAR(255), birthday CHAR (255), age_range CHAR (255))');
+    $db->exec('CREATE TABLE IF NOT EXISTS user_profile (id INT AUTO_INCREMENT PRIMARY KEY, fb_id INT, name CHAR(255), about VARCHAR(4000), birthday CHAR (255), age_range CHAR (255))');
 }
 
 function save_user_info($params)
 {
     $db = Flight::db();
     #$stmt = $db->prepare('INSERT INTO user_profile (fb_id, name, birthday, age_range) VALUES (:fb_id, :name, :birthday, :age_range)');
-    $stmt = $db->prepare('INSERT INTO user_profile (fb_id, name, birthday) VALUES (:fb_id, :name, :birthday)');
+    $stmt = $db->prepare('INSERT INTO user_profile (fb_id, name, about, birthday) VALUES (:fb_id, :name, :about, :birthday)');
     $stmt->bindParam(':fb_id', $params['id']);
     $stmt->bindParam(':name', $params['name']);
+    $stmt->bindParam(':about', $params['about']);
     $stmt->bindParam(':birthday', $params['birthday']);
     #$stmt->bindParam(':age_range', $params['age_range']);
     $stmt->execute();

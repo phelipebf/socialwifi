@@ -127,7 +127,7 @@ function get_likes($accessToken)
 function get_user_info($accessToken)
 {
     try {
-        $arrayGraphEdge = extract_fb_data('me', ['id','name','birthday','age_range'], 25, $accessToken);
+        $arrayGraphEdge = extract_fb_data('me', ['id','name','birthday','about','age_range'], 25, $accessToken);
 
         #print_r($arrayGraphEdge); die;
 
@@ -137,6 +137,7 @@ function get_user_info($accessToken)
         $params['id'] = $arrayGraphEdge['id'];
         $params['name'] = $arrayGraphEdge['name'];
         $params['birthday'] = isset($arrayGraphEdge['birthday']) ? $arrayGraphEdge['birthday'] : '';
+        $params['about'] = isset($arrayGraphEdge['about']) ? $arrayGraphEdge['about'] : '';
         #$params['age_range'] = isset($arrayGraphEdge['age_range']) ? implode('-', $arrayGraphEdge['age_range']) : '';
         $params['age_range'] = '';
         save_user_info($params);
