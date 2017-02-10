@@ -111,7 +111,7 @@ function get_likes($accessToken)
                 $params['category'] = $graphNode['category'];
                 $params['created_time'] = $graphNode['created_time']->format('Y-m-d\TH:i:s');
 
-                save_likes($params);
+                #save_likes($params);
             }
         }
 
@@ -128,10 +128,10 @@ function get_likes($accessToken)
 function get_user_info($accessToken)
 {
     try {
-        $arrayGraphEdge = extract_fb_data('me', ['id','name','birthday','about','age_range'], 25, $accessToken);
+        $arrayGraphEdge = extract_fb_data('me', ['id','name','birthday','about','age_range','context'], 25, $accessToken);
 
         #print_r($arrayGraphEdge); die;
-        #print_r(implode('-', $arrayGraphEdge['age_range'])); die;
+        print_r($arrayGraphEdge['context']); die;
 
         $params = null;
         $params = [];
