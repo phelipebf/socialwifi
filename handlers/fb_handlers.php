@@ -110,7 +110,7 @@ function get_likes($accessToken)
                 $params['id'] = $graphNode['id'];
                 $params['name'] = $graphNode['name'];
                 $params['category'] = $graphNode['category'];
-                save_likes($params);
+                #save_likes($params);
             }
         }
 
@@ -129,7 +129,7 @@ function get_user_info($accessToken)
     try {
         $arrayGraphEdge = extract_fb_data('me', ['id','name','birthday','age_range'], 25, $accessToken);
 
-        #print_r($arrayGraphEdge); die;
+        print_r($arrayGraphEdge); die;
 
         $params = null;
         $params = [];
