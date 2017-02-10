@@ -110,7 +110,7 @@ function get_likes($accessToken)
                 $params['name'] = $graphNode['name'];
                 $params['category'] = $graphNode['category'];
                 $params['created_time'] = $graphNode['created_time']->format('Y-m-d\TH:i:s');
-                #save_likes($params);
+                save_likes($params);
             }
         }
 
@@ -137,7 +137,8 @@ function get_user_info($accessToken)
         $params['id'] = $arrayGraphEdge['id'];
         $params['name'] = $arrayGraphEdge['name'];
         $params['birthday'] = isset($arrayGraphEdge['birthday']) ? $arrayGraphEdge['birthday'] : '';
-        $params['age_range'] = isset($arrayGraphEdge['age_range']) ? implode('-', $arrayGraphEdge['age_range']) : '';
+        #$params['age_range'] = isset($arrayGraphEdge['age_range']) ? implode('-', $arrayGraphEdge['age_range']) : '';
+        $params['age_range'] = '';
         save_user_info($params);
 
     } catch (FacebookResponseException $ex) {
