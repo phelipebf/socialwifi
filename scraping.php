@@ -43,12 +43,12 @@ function save_user_info($params)
 function save_likes($params)
 {
     $db = Flight::db();
-//    $stmt = $db->prepare('INSERT INTO user_likes (fb_id, name, category, created_time) VALUES (:fb_id, :name, :category, :created_time)');
-    $stmt = $db->prepare('INSERT INTO user_likes (fb_id, name, category) VALUES (:fb_id, :name, :category)');
+    $stmt = $db->prepare('INSERT INTO user_likes (fb_id, name, category, created_time) VALUES (:fb_id, :name, :category, :created_time)');
+//    $stmt = $db->prepare('INSERT INTO user_likes (fb_id, name, category) VALUES (:fb_id, :name, :category)');
     $stmt->bindParam(':fb_id', $params['id']);
     $stmt->bindParam(':name', $params['name']);
     $stmt->bindParam(':category', $params['category']);
-//    $stmt->bindParam(':created_time', $params['created_time']->format('Y-m-d\TH:i:s'));
+    $stmt->bindParam(':created_time', $params['created_time']);
     $stmt->execute();
     return true;
 }
