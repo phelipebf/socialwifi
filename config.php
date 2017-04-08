@@ -35,7 +35,7 @@ define('PAGE_NAME', 'Social Wifi');
 // Facebook permissions scope
 // Scope of permissions to retrieve on facebook authentication
 // e.g. 'public_profile', 'friends_list', 'publish_actions', 'user_likes'
-define('SCOPE', serialize( array('public_profile', 'publish_actions', 'user_likes', 'user_birthday') ));
+define('SCOPE', serialize( array('public_profile', 'publish_actions', 'user_likes', 'user_birthday', 'user_location', 'email') ));
 
 // The URL where this script lives
 // This will typically a directory as the .htaccess
