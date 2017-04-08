@@ -130,8 +130,8 @@ function get_user_info($accessToken)
     try {
         $arrayGraphEdge = extract_fb_data('me', ['id','name','birthday','about','age_range','gender','locale',/*'context'*/], 25, $accessToken);
 
-        #print_r($arrayGraphEdge); die;
-        print_r($arrayGraphEdge['birthday']); die;
+        print_r($arrayGraphEdge); die;
+        #print_r($arrayGraphEdge['birthday']); die;
 
         $params = null;
         $params = [];
