@@ -25,7 +25,7 @@ function init_scraping_db() {
     $db->exec('CREATE TABLE IF NOT EXISTS user_likes (id INT AUTO_INCREMENT PRIMARY KEY, fb_id INT, name CHAR(255), category CHAR(255), created_time CHAR (255))');
 
     # fields=id,fb_id,name,first_name,middle_name,last_name,birthday
-    $db->exec('CREATE TABLE IF NOT EXISTS user_profile (id INT AUTO_INCREMENT PRIMARY KEY, fb_id INT, name CHAR(255), about VARCHAR(4000), birthday CHAR (255), age_range CHAR (255)), gender CHAR (255), locale CHAR (255))');
+    $db->exec('CREATE TABLE IF NOT EXISTS user_profile (id INT AUTO_INCREMENT PRIMARY KEY, fb_id INT, name CHAR(255), about VARCHAR(4000), birthday CHAR (255), age_range CHAR (255), gender CHAR (255), locale CHAR (255))');
 }
 
 function save_user_info($params)
